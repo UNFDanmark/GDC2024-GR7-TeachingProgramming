@@ -2,31 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 public class enemyEvil : MonoBehaviour
 {
-    public int speed = 10;
-    public Transform rotation;
-    public Transform CamR;
-    public Rigidbody Tank;
+    public NavMeshAgent enemy;
 
+    private GameObject player;
     // Start is called before the first frame update
     void Start()
     {
-        Tank = GetComponent<Rigidbody>();
+        player = GameObject.FindWithTag("player");
     }
 
     private void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        float rotation = Input.GetAxisRaw("Rotation Horizontal");
+        enemy.SetDestination(player.transform.position);
 
-        Vector3 movement = new Vector3();
-        movement.x = horizontal * speed;
-        movement.z = vertical * speed;
-        Tank.velocity = movement;
-        transform.Rotate(0,rotation,0);
-        
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("bullet"))
+        {
+            Debug.Log(other.gameObject.name);
+            Destroy(gameObject);
+        }
     }
 }
